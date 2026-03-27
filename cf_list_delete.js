@@ -7,7 +7,7 @@ import { notifyWebhook } from "./lib/utils.js";
 
 if (!DELETION_ENABLED) {
   console.warn(
-    "The list deletion step is no longer needed to update filter lists, safely skipping. To proceed with deletion to e.g. stop using CGPS, set the environment variable CGPS_DELETION_ENABLED=true and re-run the script. Exiting."
+    "The list deletion step is no longer needed to update filter lists, safely skipping. To proceed with deletion to e.g. stop using NOADS, set the environment variable NOADS_DELETION_ENABLED=true and re-run the script. Exiting."
   );
   process.exit(0);
 }
@@ -22,17 +22,17 @@ if (!DELETION_ENABLED) {
     return;
   }
 
-  // Match lists from all tiers + legacy "CGPS List" prefix
+  // Match lists from all tiers + legacy "NOADS List" prefix
   const prefixes = [
     ...TIER_NAMES.map(getTierListPrefix),
-    "CGPS List", // legacy prefix for backward compatibility
+    "NOADS List", // legacy prefix for backward compatibility
   ];
 
-  const cgpsLists = lists.filter(({ name }) =>
+  const noadsLists = lists.filter(({ name }) =>
     prefixes.some((prefix) => name.startsWith(prefix))
   );
 
-  if (!cgpsLists.length) {
+  if (!noadsLists.length) {
     console.warn(
       "No lists with matching name found - this is not an issue if you haven't created any filter lists before. Exiting."
     );
@@ -40,11 +40,11 @@ if (!DELETION_ENABLED) {
   }
 
   console.log(
-    `Got ${lists.length} lists, ${cgpsLists.length} of which are CGPS lists that will be deleted.`
+    `Got ${lists.length} lists, ${noadsLists.length} of which are NOADS lists that will be deleted.`
   );
 
-  console.log(`Deleting ${cgpsLists.length} lists...`);
+  console.log(`Deleting ${noadsLists.length} lists...`);
 
-  await deleteZeroTrustListsOneByOne(cgpsLists);
-  await notifyWebhook(`CF List Delete script finished running (${cgpsLists.length} lists)`);
+  await deleteZeroTrustListsOneByOne(noadsLists);
+  await notifyWebhook(`CF List Delete script finished running (${noadsLists.length} lists)`);
 })();

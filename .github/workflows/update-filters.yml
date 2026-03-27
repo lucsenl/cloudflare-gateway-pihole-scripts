@@ -2,10 +2,7 @@ name: Update Filter Lists
 
 on:
   schedule:
-    - cron: "0 3 * * 1"
-  push:
-    branches:
-      - main
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -16,7 +13,7 @@ env:
   NODE_ENV: production
 
 jobs:
-  cgps:
+  noads:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,3 +60,17 @@ jobs:
       actions: write
     steps:
       - uses: liskin/gh-workflow-keepalive@v1
+
+  cleanup:
+    needs: noads
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete old workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 1
+          keep_minimum_runs: 3
