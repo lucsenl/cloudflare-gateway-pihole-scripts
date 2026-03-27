@@ -1,12 +1,10 @@
-# Cloudflare Gateway Pi-hole Scripts (CGPS)
-
-![Cloudflare Gateway Analytics screenshot showing a thousand blocked DNS requests](.github/images/gateway_analytics.png)
+# NOADS - Cloudflare Gateway DNS Filter
 
 Cloudflare Gateway allows you to create custom rules to filter HTTP, DNS, and network traffic based on your firewall policies. This is a collection of scripts that can be used to get a similar experience as if you were using Pi-hole, but with Cloudflare Gateway - so no servers to maintain or need to buy a Raspberry Pi!
 
 ## Tier System
 
-CGPS uses a **tier hierarchy** with three fixed tiers — **Core**, **Lite** and **Pro** — that lets you apply different blocklists/allowlists to different Cloudflare Gateway DNS locations.
+NOADS uses a **tier hierarchy** with three fixed tiers — **Core**, **Lite** and **Pro** — that lets you apply different blocklists/allowlists to different Cloudflare Gateway DNS locations.
 
 | Tier | Scope | Location filter |
 |------|-------|-----------------|
@@ -97,8 +95,8 @@ PRO_LOCATION_IDS=005c1b21f5b04c27aceab2146db90743
 | `download_lists.js` | Downloads blocklists and allowlists for all tiers |
 | `cf_list_create.js` | Processes domains per tier and syncs Zero Trust lists to Cloudflare |
 | `cf_gateway_rule_create.js` | Creates DNS gateway rules per tier with location filtering |
-| `cf_list_delete.js` | Deletes all CGPS lists from Cloudflare Gateway |
-| `cf_gateway_rule_delete.js` | Deletes all CGPS gateway rules |
+| `cf_list_delete.js` | Deletes all NOADS lists from Cloudflare Gateway |
+| `cf_gateway_rule_delete.js` | Deletes all NOADS gateway rules |
 | `cf_defragment.js` | Defragments lists per tier (compacts sparse lists) |
 
 ### npm commands
