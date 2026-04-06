@@ -63,6 +63,7 @@ Each tier reads three environment variables. URLs and IDs are **separated by new
 | `BLOCK_PAGE_ENABLED` | Show a block page when a domain is blocked (`1` to enable) | `0` |
 | `BLOCK_BASED_ON_SNI` | Enable experimental SNI-based filtering (`1` to enable) | `0` |
 | `DRY_RUN` | Simulate changes without modifying Cloudflare (`1` to enable) | `0` |
+| `NOADS_DELETION_ENABLED` | Enable deletion of NOADS lists and gateway rules when running delete scripts (`1` to enable) | `0` |
 | `DISCORD_WEBHOOK_URL` | Discord webhook URL for notifications | — |
 | `PING_URL` | HTTP(S) URL to ping after a successful run | — |
 | `DEBUG` | Enable debug logging (`1` to enable) | `0` |

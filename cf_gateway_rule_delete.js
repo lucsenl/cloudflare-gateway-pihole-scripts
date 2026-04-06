@@ -4,7 +4,7 @@ import { notifyWebhook } from "./lib/utils.js";
 
 if (!DELETION_ENABLED) {
   console.warn(
-    "The rule deletion step is no longer needed to update filter lists, safely skipping. To proceed with deletion to e.g. stop using NOADS, set the environment variable NOADS_DELETION_ENABLED=true and re-run the script. Exiting."
+    "The rule deletion step is no longer needed to update filter lists, safely skipping. To proceed with deletion to e.g. stop using NOADS, set the environment variable NOADS_DELETION_ENABLED=1 and re-run the script. Exiting."
   );
   process.exit(0);
 }
