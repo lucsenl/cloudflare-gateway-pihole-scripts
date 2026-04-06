@@ -63,6 +63,16 @@ if (existsSync(coreAllowlistFilename)) {
   console.log(`Loaded ${allowlist.size} allowlisted domains after merging core allowlist.\n`);
 }
 
+const hasChildAllowlist = (domain, allowlistMap) => {
+  const suffix = `.${domain}`;
+  for (const allowDomain of allowlistMap.keys()) {
+    if (allowDomain !== domain && allowDomain.endsWith(suffix)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 // Track global domain count across all tiers (shared LIST_ITEM_LIMIT)
 let globalDomainCount = 0;
 
@@ -135,6 +145,15 @@ for (const tier of TIER_NAMES) {
 
     if (tierAllowlist.has(domain)) {
       if (DEBUG) console.log(`Found ${domain} in allowlist - Skipping`);
+      allowedDomainCount++;
+      return;
+    }
+
+    if (hasChildAllowlist(domain, tierAllowlist)) {
+      if (DEBUG)
+        console.log(
+          `Found allowlisted subdomain of ${domain} - Skipping parent block to preserve exception`
+        );
       allowedDomainCount++;
       return;
     }
