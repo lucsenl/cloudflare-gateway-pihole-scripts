@@ -48,6 +48,21 @@ if (existsSync(allowlistFilename)) {
   console.log("No shared allowlist found, proceeding without one.\n");
 }
 
+// Core allowlist entries are global for all tiers.
+const coreAllowlistFilename = getTierAllowlistFilename("core");
+if (existsSync(coreAllowlistFilename)) {
+  console.log(`Merging core allowlist into global allowlist: ${coreAllowlistFilename}`);
+  await readFile(resolve(`./${coreAllowlistFilename}`), (line) => {
+    const _line = line.trim();
+    if (!_line) return;
+    if (isComment(_line)) return;
+    const domain = memoizedNormalizeDomain(_line, true);
+    if (!isValidDomain(domain)) return;
+    allowlist.set(domain, 1);
+  });
+  console.log(`Loaded ${allowlist.size} allowlisted domains after merging core allowlist.\n`);
+}
+
 // Track global domain count across all tiers (shared LIST_ITEM_LIMIT)
 let globalDomainCount = 0;
 
@@ -124,14 +139,18 @@ for (const tier of TIER_NAMES) {
       return;
     }
 
-    // For non-core tiers, skip domains already in core (they're blocked for everyone)
-    if (tier !== "core" && coreDomains.has(domain)) {
-      if (DEBUG)
-        console.log(
-          `Found ${domain} in core blocklist - Skipping (already blocked for everyone)`
-        );
-      deduplicatedFromCoreCount++;
-      return;
+    // For non-core tiers, skip domains already covered by core blocklist entries.
+    if (tier !== "core") {
+      for (const parentDomain of extractDomain(domain)) {
+        if (coreDomains.has(parentDomain)) {
+          if (DEBUG)
+            console.log(
+              `Found ${domain} covered by core domain ${parentDomain} - Skipping (core is global)`
+            );
+          deduplicatedFromCoreCount++;
+          return;
+        }
+      }
     }
 
     if (blocklist.has(domain)) {
