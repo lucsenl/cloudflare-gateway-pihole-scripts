@@ -45,6 +45,7 @@ jobs:
           PRO_BLOCKLIST_URLS: ${{ vars.PRO_BLOCKLIST_URLS }}
           PRO_ALLOWLIST_URLS: ${{ vars.PRO_ALLOWLIST_URLS }}
           PRO_LOCATION_IDS: ${{ vars.PRO_LOCATION_IDS }}
+          NOADS_DELETION_ENABLED: ${{ vars.NOADS_DELETION_ENABLED }}
 
       - name: Send ping request
         if: env.PING_URL != ''
