@@ -1,4 +1,4 @@
-import { getZeroTrustLists, upsertZeroTrustDNSRule, upsertZeroTrustSNIRule } from "./lib/api.js";
+import { getZeroTrustLists, getZeroTrustRules, upsertZeroTrustDNSRule, upsertZeroTrustSNIRule } from "./lib/api.js";
 import {
   BLOCK_BASED_ON_SNI,
   TIERS,
@@ -8,7 +8,10 @@ import {
 } from "./lib/constants.js";
 import { notifyWebhook } from "./lib/utils.js";
 
-const { result: lists } = await getZeroTrustLists();
+const [{ result: lists }, { result: existingRules }] = await Promise.all([
+  getZeroTrustLists(),
+  getZeroTrustRules(),
+]);
 
 for (const tier of TIER_NAMES) {
   const tierConfig = TIERS[tier];
@@ -19,7 +22,7 @@ for (const tier of TIER_NAMES) {
   console.log(`\n=== Creating rules for tier: ${tier.toUpperCase()} ===`);
 
   // Upsert DNS rule (with location filter for non-core tiers)
-  await upsertZeroTrustDNSRule(lists, ruleName, prefix, locationIds);
+  await upsertZeroTrustDNSRule(lists, ruleName, prefix, locationIds, existingRules);
 
   // Optionally create a rule that matches the SNI.
   if (BLOCK_BASED_ON_SNI) {
@@ -27,7 +30,8 @@ for (const tier of TIER_NAMES) {
       lists,
       `${ruleName} - SNI`,
       prefix,
-      locationIds
+      locationIds,
+      existingRules
     );
   }
 }
